@@ -23,3 +23,12 @@ git clone https://huggingface.co/BAAI/bge-large-en-v1.5
 ### 3. Launch Giraffe AI
 Run Giraffe_AI_launcher.py in your virtual environment
 
+## Development Log
+### Version 1.0 (3/22/2024)
+#### 1.0.0: initial release (3/22/2024)
+- Databse: Chroma
+- Record management: document upload and replacement
+- Source document format: .pdf/.txt
+- Embeddings: bge-large-en-v1.5
+- LLM: OpenAI GPT3.5-turbo
+
