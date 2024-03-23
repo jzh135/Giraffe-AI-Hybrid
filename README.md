@@ -13,7 +13,7 @@ conda activate GiraffeAI
 pip install -r requirements.txt
 ```
 #### 2.2 Constants 
-Change "Your API KEY" to your OpenAI API Key
+Change "Your API KEY" to your OpenAI API Key in constants.py
 #### 2.3 Embeddings
 1. Create a new folder and rename it to "model"
 2. Download bge-large-en-v1.5 to the *model* folder using following command:
