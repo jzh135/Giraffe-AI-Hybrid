@@ -33,4 +33,6 @@ python Giraffe_AI_launcher.py
 - Source document format: .pdf/.txt
 - Embeddings: bge-large-en-v1.5
 - LLM: OpenAI GPT3.5-turbo
-
+#### 1.0.1: minor updates (3/23/2024)
+- Add directory checker
+- Import OpenAI API Key from a file
