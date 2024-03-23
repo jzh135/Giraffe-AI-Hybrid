@@ -1,18 +1,9 @@
-### Install Dependencies
-# pip install -qU langchain-text-splitters
-# pip install pymupdf
-# pip install pypdf
-# pip install langchain-community
-# pip install chromadb
 import os
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import TextLoader
 from langchain.document_loaders.pdf import PyMuPDFLoader
 from langchain.document_loaders.csv_loader import CSVLoader
-
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
-from langchain_community.vectorstores import Chroma
 
 from datetime import datetime
 
@@ -20,10 +11,9 @@ import tkinter as tk
 from tkinter import*
 import customtkinter
 
-from model_loader import en_embeddings, db
-from constants import SOURCE_DIRECTORY, DB_DIRECTORY, SINGLE_SOURCE
+from model_loader import db
+from constants import SOURCE_DIRECTORY
 
-#INGEST_THREADS = os.cpu_count() or 4
 # Define a dictionary to map file extensions to their respective loaders
 LOADER_ENGINES = {
     '.pdf': PyMuPDFLoader,
@@ -31,7 +21,7 @@ LOADER_ENGINES = {
     '.csv': CSVLoader
 }
 
-def db_update_single(new_doc_path,db,source_directory):
+def db_update_single(new_doc_path,db):
     ## Get database list of ids and metadata
     db_dic = db.get()
     ids_list = db_dic["ids"]
@@ -39,6 +29,7 @@ def db_update_single(new_doc_path,db,source_directory):
     ## Load and split new document
     # Check file type
     file_extension = os.path.splitext(new_doc_path)[1]
+    file_name = os.path.splitext(new_doc_path)[0]
     # Load .txt file
     if file_extension == ".txt":
         loader = TextLoader(new_doc_path,encoding='utf-8') # If not specific encoding, it will have rise UnicodeDecodeError
@@ -56,15 +47,12 @@ def db_update_single(new_doc_path,db,source_directory):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=200)
     new_doc_slices = text_splitter.split_documents(new_doc)
 
-    # Get new document metadata and file name
-    new_doc_meta = new_doc_slices[0].metadata['source']
-    new_doc_name = new_doc_meta[len(source_directory)+1:]
     ## Check if the new document file name is existed in the database and remove the duplicate old document vectors
     i = 0
     for slice_meta_data in meta_list:
-        if new_doc_name in slice_meta_data["source"]:
+        if file_name in slice_meta_data["source"]:
             ids = ids_list[i]
-            print(f"Existed document slice with ids = {ids} from file {new_doc_name} is removed from the database")
+            print(f"Existed document slice with ids = {ids} from file {file_name} is removed from the database")
             db.delete(ids)
         i = i+1
     return new_doc_slices
@@ -76,7 +64,8 @@ def db_update(db,source_directory):
             #file_extension = os.path.splitext(file_name)[1]
             source_file_path = os.path.join(root, file_name)
             # Remove duplicate files and get new document slices
-            new_doc_slices = db_update_single(source_file_path,db,source_directory)
+            new_doc_slices = db_update_single(new_doc_path=source_file_path, db=db)
+            print(f"{len(new_doc_slices)} slices are loaded successfully")
             # Update database
             db.add_documents(new_doc_slices)
             print(f"New document {file_name} is added to the database")
@@ -84,7 +73,7 @@ def db_update(db,source_directory):
 
 
 #db_update_single(db=en_db, new_doc_path=EN_SINGLE_SOURCE, source_directory=EN_SOURCE_DIRECTORY)
-#db_update(db=en_db, source_directory=EN_SOURCE_DIRECTORY)
+#db_update(db=db, source_directory=SOURCE_DIRECTORY)
 #db_update(db=zh_db, source_directory=ZH_SOURCE_DIRECTORY)
 customtkinter.set_appearance_mode("Light")
 customtkinter.set_default_color_theme("dark-blue")
