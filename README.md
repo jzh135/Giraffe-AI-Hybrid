@@ -10,7 +10,7 @@ conda activate GiraffeAI
 ### 2. Setup Giraffe AI
 #### 2.1 Install all required libraries from requirements.txt
 ```
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 #### 2.2 Constants 
 Change "Your API KEY" to your OpenAI API Key
