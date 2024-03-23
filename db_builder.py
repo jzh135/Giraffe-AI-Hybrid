@@ -46,7 +46,6 @@ def db_update_single(new_doc_path,db):
             new_doc[0].page_content = new_doc[0].page_content + page.page_content
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=200)
     new_doc_slices = text_splitter.split_documents(new_doc)
-
     ## Check if the new document file name is existed in the database and remove the duplicate old document vectors
     i = 0
     for slice_meta_data in meta_list:
@@ -55,7 +54,11 @@ def db_update_single(new_doc_path,db):
             print(f"Existed document slice with ids = {ids} from file {file_name} is removed from the database")
             db.delete(ids)
         i = i+1
-    return new_doc_slices
+    ## Add new document slices to database
+    print(f"{len(new_doc_slices)} slices are loaded successfully")
+    db.add_documents(new_doc_slices)
+    print(f"New document {file_name} is added to the database")
+    return None
     
 
 def db_update(db,source_directory):
@@ -64,11 +67,7 @@ def db_update(db,source_directory):
             #file_extension = os.path.splitext(file_name)[1]
             source_file_path = os.path.join(root, file_name)
             # Remove duplicate files and get new document slices
-            new_doc_slices = db_update_single(new_doc_path=source_file_path, db=db)
-            print(f"{len(new_doc_slices)} slices are loaded successfully")
-            # Update database
-            db.add_documents(new_doc_slices)
-            print(f"New document {file_name} is added to the database")
+            db_update_single(new_doc_path=source_file_path, db=db)
     return None
 
 
