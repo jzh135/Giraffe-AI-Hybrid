@@ -22,7 +22,9 @@ git clone https://huggingface.co/BAAI/bge-large-en-v1.5
 ```
 ### 3. Launch Giraffe AI
 Run Giraffe_AI_launcher.py in your virtual environment
-
+```
+python Giraffe_AI_launcher.py
+```
 ## Development Log
 ### Version 1.0 (3/22/2024)
 #### 1.0.0: initial release (3/22/2024)
