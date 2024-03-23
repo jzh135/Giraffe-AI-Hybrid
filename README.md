@@ -8,7 +8,7 @@ conda create -n GiraffeAI python=3.10.0
 conda activate GiraffeAI
 ```
 ### 2. Setup Giraffe AI
-#### 2.1 Install all required libraries from requirement.txt
+#### 2.1 Install all required libraries from requirements.txt
 ```
 pip install -r requirement.txt
 ```
