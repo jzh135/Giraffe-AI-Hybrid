@@ -36,3 +36,5 @@ python Giraffe_AI_launcher.py
 #### 1.0.1: minor updates (3/23/2024)
 - Add directory checker
 - Import OpenAI API Key from a file
+- DB builder will skip unsupported files
+- Once source file is loaded, it will be removed from the source folder and moves to the archive folder
