@@ -12,7 +12,7 @@ conda activate GiraffeAI
 ```
 pip install -r requirements.txt
 ```
-#### 2.2 Constants 
+#### 2.2 LLM API 
 Create a .txt file in the current directory with your OpenAI API Key, rename the file to *openAI_API.txt*
 #### 2.3 Embeddings
 1. Create a new folder and rename it to "model"
