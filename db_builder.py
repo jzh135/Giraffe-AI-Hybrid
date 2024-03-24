@@ -1,4 +1,5 @@
 import os
+import shutil
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import TextLoader
 from langchain.document_loaders.pdf import PyMuPDFLoader
@@ -12,7 +13,7 @@ from tkinter import*
 import customtkinter
 
 from model_loader import db
-from constants import SOURCE_DIRECTORY
+from constants import SOURCE_DIRECTORY, METADATA_DIRECTORY, ARCHIVE_SOURCE_DIRECTORY
 
 # Define a dictionary to map file extensions to their respective loaders
 LOADER_ENGINES = {
@@ -37,6 +38,9 @@ def db_update_single(new_doc_path,db):
     elif file_extension == ".pdf":
         print("loading")
         loader = PyMuPDFLoader(new_doc_path)
+    else:
+        print(f"{file_name} is not supported")
+        return None
     pages = loader.load()
     # Initialize new_doc
     new_doc = [Document]
@@ -46,6 +50,7 @@ def db_update_single(new_doc_path,db):
             new_doc[0].page_content = new_doc[0].page_content + page.page_content
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=200)
     new_doc_slices = text_splitter.split_documents(new_doc)
+
     ## Check if the new document file name is existed in the database and remove the duplicate old document vectors
     i = 0
     for slice_meta_data in meta_list:
@@ -68,6 +73,16 @@ def db_update(db,source_directory):
             source_file_path = os.path.join(root, file_name)
             # Remove duplicate files and get new document slices
             db_update_single(new_doc_path=source_file_path, db=db)
+            # Move source file to the archive folder
+            archive_source_file =  os.path.join(ARCHIVE_SOURCE_DIRECTORY, file_name)
+            # Delete the old file in archive folder
+            if os.path.exists(archive_source_file):
+                os.remove(archive_source_file)
+                print(f"{file_name} in {ARCHIVE_SOURCE_DIRECTORY} was successfully deleted.")
+            else:
+                print(f"{file_name} does not exist in {ARCHIVE_SOURCE_DIRECTORY}.")
+            # Add new file to archive folder
+            shutil.move(source_file_path, ARCHIVE_SOURCE_DIRECTORY)
     return None
 
 
@@ -124,6 +139,10 @@ class db_window(customtkinter.CTkToplevel):
         db_update(db=db, source_directory=SOURCE_DIRECTORY)
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self.info_box.insert('end', f"\n{current_time} > Database is updated\n")
+        # Generate database report
+        en_db_dic = db.get()
+        ids_list = en_db_dic["ids"]
+        self.info_box.insert('end', f"\n > The database is comprised of {len(ids_list)} segments of embedded data\n")
     
     def zh_db_build(self):
         pass
