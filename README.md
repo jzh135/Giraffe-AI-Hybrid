@@ -1,5 +1,5 @@
 # Giraffe AI Hybrid
-🦒 Welcome to Giraffe AI Lite! 🦒
+🦒 Welcome to Giraffe AI Hybrid! 🦒
 I’m your trusty digital giraffe here to assist you with precision and accuracy. 
 As a RAG system, I rely on our local database to provide spot-on answers to your queries. Whether it’s facts, trivia, or practical advice, I’ve got it covered!
 Let’s explore the vast savanna of knowledge together! 🌟🦒
